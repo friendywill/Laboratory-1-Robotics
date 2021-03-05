@@ -14,13 +14,11 @@ def ambient_light_handler(ambient_light_data):
 def main():
     """ This program demonstrates how to set the all the LEDs of RVR using the LED control helper.
     """
+    rvr.wake()
 
+    # Give RVR time to wake up
+    time.sleep(2)
     try:
-        rvr.wake()
-
-        # Give RVR time to wake up
-        time.sleep(2)
-        
         rvr.sensor_control.add_sensor_data_handler(
             service=RvrStreamingServices.ambient_light,
             handler=ambient_light_handler
