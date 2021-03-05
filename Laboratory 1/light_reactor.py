@@ -1,64 +1,42 @@
 import os
 import sys
+import time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
 
-import asyncio
-from sphero_sdk import SpheroRvrAsync
+from sphero_sdk import SpheroRvrObserver
 from sphero_sdk import Colors
-from sphero_sdk import RvrLedGroups
-from sphero_sdk import SerialAsyncDal
+from sphero_sdk import RvrStreamingServices
 
+rvr = SpheroRvrObserver()
+forTheLoop = True
 
-loop = asyncio.get_event_loop()
-
-rvr = SpheroRvrAsync(
-    dal=SerialAsyncDal(
-        loop
-    )
-)
-
-
-async def main():
-    """ This program demonstrates how to set the all the LEDs.
+def main():
+    """ This program demonstrates how to set the all the LEDs of RVR using the LED control helper.
     """
 
-    await rvr.wake()
-
-    # Give RVR time to wake up
-    await asyncio.sleep(2)
-
-    await rvr.set_all_leds(
-        led_group=RvrLedGroups.all_lights.value,
-        led_brightness_values=[color for _ in range(10) for color in Colors.off.value]
-    )
-
-    # Delay to show LEDs change
-    await asyncio.sleep(1)
-
-    await rvr.set_all_leds(
-        led_group=RvrLedGroups.all_lights.value,
-        led_brightness_values=[color for x in range(10) for color in [0, 255, 0]]
-    )
-
-    # Delay to show LEDs change
-    await asyncio.sleep(1)
-
-    await rvr.close()
-
-
-if __name__ == '__main__':
     try:
-        loop.run_until_complete(
-            main()
+        rvr.wake()
+
+        # Give RVR time to wake up
+        time.sleep(2)
+        
+        rvr.sensor_control.add_sensor_data_handler(
+            service=RvrStreamingServices.ambient_light,
+            handler=ambient_light_handler
         )
+
+        rvr.sensor_control.start(interval=250)
+
+        rvr.led_control.set_all_leds_color(color=Colors.yellow)
+
+        # Delay to show LEDs change
+        time.sleep(1)
 
     except KeyboardInterrupt:
         print('\nProgram terminated with keyboard interrupt.')
 
-        loop.run_until_complete(
-            rvr.close()
-        )
-
     finally:
-        if loop.is_running():
-            loop.close()
+        rvr.close()
+
+if forTheLoop == True:
+    main()
