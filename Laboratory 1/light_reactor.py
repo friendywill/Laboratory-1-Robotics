@@ -1,3 +1,14 @@
+"""
+Author: William Friend
+Date created: 02/03/2021
+Date last changed: 07/03/2021
+Version: 1.04
+
+This program takes the ambient light data from the Sphero RVR ambient light sensor,
+then sets the brightness of the LED's inversely proportional to how bright the
+environmnet is around it. For example, if the environmnet is bright, the LED's will dim
+down, whether if it were dim, the LED's would get brighter.
+"""
 import os
 import sys
 import time
@@ -6,14 +17,34 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../.
 from sphero_sdk import SpheroRvrObserver
 from sphero_sdk import Colors
 from sphero_sdk import RvrStreamingServices
+from sphero_sdk import RvrLedGroups
 
-rvr = SpheroRvrObserver()
+# This value is for the imfinite loop
 forTheLoop = True
+rvr = SpheroRvrObserver()
+
+# This section asks the users for input of their prefered minimum and maximum ambient
+# brigtness levels for the Sphero RVR ambient sensors.
+def minimumAmbientLevel():
+    print(
+        "At what ambient light level, would you like the LED's to be their brightest?")
+    global minimum_ambient_level
+    minimum_ambient_level = input()
+def maximumAmbientLevel():
+    print(
+        "At what ambient light level, would you like the LED's to be their dimmest?")
+    global maximum_ambient_level
+    maximum_ambient_level = input()
+
+# This section provides the ambient light levels from the sensors.
 def ambient_light_handler(ambient_light_data):
-    print('Accelerometer data response: ', ambient_light_data)
-def main():
-    """ This program demonstrates how to set the all the LEDs of RVR using the LED control helper.
-    """
+    #This print will be removed, it is only for debugging
+    print('Ambient light data response: ', ambient_light_data)
+    global ambient_light
+    ambient_light = ambient_light_data
+    
+# This reacts inversely proportional to the ambient light
+def light_reactor():
     rvr.wake()
 
     # Give RVR time to wake up
@@ -25,17 +56,28 @@ def main():
         )
 
         rvr.sensor_control.start(interval=250)
-
-        rvr.led_control.set_all_leds_color(color=Colors.yellow)
-
-        # Delay to show LEDs change
+        
+        # This is the if statement that handles the brightness of the LED's
+        # depending on the ambient brightness
+        if ambient_light > maximum_ambient_level:
+            ambient_light = maximum_ambient_level
+            continue
+        elif ambient_light < minimum_ambient_level:
+            ambient_light = minimum_ambient_level
+            continue
+        else:
+            continue
+            
+        # This is the mathematical equation that inversley sets the LED's to the
+        # ambient light level
+        led_value_multiplier = 1 - ((ambient_light - minimum_ambient_level) 
+                                    / maximum_ambient_level -minimum_ambient_level)
         time.sleep(1)
 
     except KeyboardInterrupt:
         print('\nProgram terminated with keyboard interrupt.')
-
-    finally:
-        rvr.close()
+        main()
 
 if forTheLoop == True:
-    main()
+    ambient_light_handler()
+    light_reactor()
