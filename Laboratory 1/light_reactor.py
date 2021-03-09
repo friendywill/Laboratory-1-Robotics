@@ -29,12 +29,23 @@ def minimumAmbientLevel():
     print(
         "At what ambient light level, would you like the LED's to be their brightest?")
     global minimum_ambient_level
-    minimum_ambient_level = input()
+    try:
+        minimum_ambient_level = float(input())
+    except ValueError:
+        print("That value was invalid!")
+        minimumAmbientLevel()
 def maximumAmbientLevel():
     print(
         "At what ambient light level, would you like the LED's to be their dimmest?")
     global maximum_ambient_level
-    maximum_ambient_level = input()
+    try:
+        maximum_ambient_level = float(input())
+        if maximum_ambient_level == minimum_ambient_level:
+            print("The maximum and minimum ambient levels cannot equal the same value!")
+            maximumAmbientLevel()
+    except ValueError:
+        print("That value was invalid!")
+        maximumAmbientLevel()
 
 # This section provides the ambient light levels from the sensors.
 def ambient_light_handler(ambient_light_data):
@@ -60,24 +71,32 @@ def light_reactor():
         # This is the if statement that handles the brightness of the LED's
         # depending on the ambient brightness
         if ambient_light > maximum_ambient_level:
-            ambient_light = maximum_ambient_level
-            continue
+            ambient_light_level = maximum_ambient_level
         elif ambient_light < minimum_ambient_level:
-            ambient_light = minimum_ambient_level
-            continue
+            ambient_light_level = minimum_ambient_level
         else:
-            continue
+            ambient_light_level = ambient_light
             
         # This is the mathematical equation that inversley sets the LED's to the
         # ambient light level
         led_value_multiplier = 1 - ((ambient_light - minimum_ambient_level) 
                                     / maximum_ambient_level -minimum_ambient_level)
+        led_value = led_value_multiplier * 255
+        rvr.set_all_leds(
+            led_group=RvrLedGroups.headlight_left.value | RvrLedGroups.headlight_right.value,
+            led_brightness_values=[
+                led_value, led_value, led_value,
+                led_value, led_value, led_value
+            ]
+        )
         time.sleep(1)
 
     except KeyboardInterrupt:
         print('\nProgram terminated with keyboard interrupt.')
-        main()
-
-if forTheLoop == True:
+        rvr.close()
+        forTheLoop = False
+minimumAmbientLevel()
+maximumAmbientLevel()
+while forTheLoop == True:
     ambient_light_handler()
     light_reactor()
