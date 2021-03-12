@@ -69,6 +69,11 @@ def light_reactor():
 
         rvr.sensor_control.start(interval=250)
         time.sleep(1)
+    
+    except KeyboardInterrupt:
+        print('\nProgram terminated with keyboard interrupt.')
+        rvr.close()
+        forTheLoop = False
     # This is the if statement that handles the brightness of the LED's
     # depending on the ambient brightness
     if ambient_light > maximum_ambient_level:
@@ -91,10 +96,6 @@ def light_reactor():
         ]
     )
 
-    except KeyboardInterrupt:
-        print('\nProgram terminated with keyboard interrupt.')
-        rvr.close()
-        forTheLoop = False
 minimumAmbientLevel()
 maximumAmbientLevel()
 while forTheLoop == True:
