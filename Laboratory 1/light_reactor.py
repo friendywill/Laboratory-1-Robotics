@@ -94,6 +94,7 @@ def light_reactor():
         led = 0
     else:
         led = led_value
+    print("This is the value: "led)
     rvr.set_all_leds(
         led_group=RvrLedGroups.headlight_left.value | RvrLedGroups.headlight_right.value,
         led_brightness_values=[
