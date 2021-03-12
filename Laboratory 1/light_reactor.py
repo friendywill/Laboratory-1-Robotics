@@ -85,8 +85,8 @@ def light_reactor():
 
     # This is the mathematical equation that inversley sets the LED's to the
     # ambient light level
-    led_value_multiplier = 1 - ((ambient_light - minimum_ambient_level) 
-                                / maximum_ambient_level -minimum_ambient_level)
+    led_value_multiplier = ((ambient_light - minimum_ambient_level) 
+                                / maximum_ambient_level - minimum_ambient_level)
     led_value = int(led_value_multiplier * 255)
     if led_value > 255:
         led = 255
@@ -94,7 +94,7 @@ def light_reactor():
         led = 0
     else:
         led = led_value
-    print("This is the value: "led)
+    print("This is the value: ", led_value)
     rvr.set_all_leds(
         led_group=RvrLedGroups.headlight_left.value | RvrLedGroups.headlight_right.value,
         led_brightness_values=[
