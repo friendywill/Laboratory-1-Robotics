@@ -85,8 +85,8 @@ def light_reactor():
 
     # This is the mathematical equation that inversley sets the LED's to the
     # ambient light level
-    led_value_multiplier = ((ambient_light - minimum_ambient_level) 
-                                / maximum_ambient_level - minimum_ambient_level)
+    led_value_multiplier = 1 - ((ambient_light - minimum_ambient_level) 
+                                / (maximum_ambient_level - minimum_ambient_level))
     led_value = int(led_value_multiplier * 255)
     if led_value > 255:
         led = 255
