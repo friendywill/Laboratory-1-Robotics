@@ -28,7 +28,7 @@ def ambient_light_handler(ambient_light_data):
     #This print will be removed, it is only for debugging
     print('Ambient light data response: ', ambient_light_data)
     global ambient_light
-    ambient_light = ambient_light_data
+    ambient_light = float(ambient_light_data["AmbientLight"]["Light"])
 
 # This section asks the users for input of their prefered minimum and maximum ambient
 # brigtness levels for the Sphero RVR ambient sensors.
