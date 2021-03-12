@@ -90,6 +90,7 @@ def light_reactor():
                 led_value, led_value, led_value
             ]
         )
+        print("This is the LED value:", led_value)
         time.sleep(1)
 
     except KeyboardInterrupt:
