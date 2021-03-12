@@ -99,5 +99,5 @@ def light_reactor():
 minimumAmbientLevel()
 maximumAmbientLevel()
 while forTheLoop == True:
-    ambient_light_handler()
+    ambient_light_handler(ambient_light_data)
     light_reactor()
