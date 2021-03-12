@@ -68,30 +68,28 @@ def light_reactor():
         )
 
         rvr.sensor_control.start(interval=250)
-        
-        # This is the if statement that handles the brightness of the LED's
-        # depending on the ambient brightness
-        if ambient_light > maximum_ambient_level:
-            ambient_light_level = maximum_ambient_level
-        elif ambient_light < minimum_ambient_level:
-            ambient_light_level = minimum_ambient_level
-        else:
-            ambient_light_level = ambient_light
-            
-        # This is the mathematical equation that inversley sets the LED's to the
-        # ambient light level
-        led_value_multiplier = 1 - ((ambient_light - minimum_ambient_level) 
-                                    / maximum_ambient_level -minimum_ambient_level)
-        led_value = led_value_multiplier * 255
-        rvr.set_all_leds(
-            led_group=RvrLedGroups.headlight_left.value | RvrLedGroups.headlight_right.value,
-            led_brightness_values=[
-                led_value, led_value, led_value,
-                led_value, led_value, led_value
-            ]
-        )
-        print("This is the LED value:", led_value)
         time.sleep(1)
+    # This is the if statement that handles the brightness of the LED's
+    # depending on the ambient brightness
+    if ambient_light > maximum_ambient_level:
+        ambient_light_level = maximum_ambient_level
+    elif ambient_light < minimum_ambient_level:
+        ambient_light_level = minimum_ambient_level
+    else:
+        ambient_light_level = ambient_light
+
+    # This is the mathematical equation that inversley sets the LED's to the
+    # ambient light level
+    led_value_multiplier = 1 - ((ambient_light - minimum_ambient_level) 
+                                / maximum_ambient_level -minimum_ambient_level)
+    led_value = led_value_multiplier * 255
+    rvr.set_all_leds(
+        led_group=RvrLedGroups.headlight_left.value | RvrLedGroups.headlight_right.value,
+        led_brightness_values=[
+            led_value, led_value, led_value,
+            led_value, led_value, led_value
+        ]
+    )
 
     except KeyboardInterrupt:
         print('\nProgram terminated with keyboard interrupt.')
