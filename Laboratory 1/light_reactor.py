@@ -23,6 +23,13 @@ from sphero_sdk import RvrLedGroups
 forTheLoop = True
 rvr = SpheroRvrObserver()
 
+# This section provides the ambient light levels from the sensors.
+def ambient_light_handler(ambient_light_data):
+    #This print will be removed, it is only for debugging
+    print('Ambient light data response: ', ambient_light_data)
+    global ambient_light
+    ambient_light = ambient_light_data
+
 # This section asks the users for input of their prefered minimum and maximum ambient
 # brigtness levels for the Sphero RVR ambient sensors.
 def minimumAmbientLevel():
@@ -47,12 +54,6 @@ def maximumAmbientLevel():
         print("That value was invalid!")
         maximumAmbientLevel()
 
-# This section provides the ambient light levels from the sensors.
-def ambient_light_handler(ambient_light_data):
-    #This print will be removed, it is only for debugging
-    print('Ambient light data response: ', ambient_light_data)
-    global ambient_light
-    ambient_light = ambient_light_data
     
 # This reacts inversely proportional to the ambient light
 def light_reactor():
