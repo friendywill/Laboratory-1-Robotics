@@ -88,11 +88,17 @@ def light_reactor():
     led_value_multiplier = 1 - ((ambient_light - minimum_ambient_level) 
                                 / maximum_ambient_level -minimum_ambient_level)
     led_value = int(led_value_multiplier * 255)
+    if led_value > 255:
+        led = 255
+    elif led_value < 0:
+        led = 0
+    else:
+        led = led_value
     rvr.set_all_leds(
         led_group=RvrLedGroups.headlight_left.value | RvrLedGroups.headlight_right.value,
         led_brightness_values=[
-            led_value, led_value, led_value,
-            led_value, led_value, led_value
+            led, led, led,
+            led, led, led
         ]
     )
 
